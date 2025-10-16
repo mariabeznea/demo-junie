@@ -1,0 +1,29 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
+    - phpstan-baseline.neon
+
+parameters:
+    paths:
+        - app
+
+    # Level 10 is the highest level
+       level: 5
+
+    ignoreErrors:
+    #        - '#PHPDoc tag @var#'
+
+    excludePaths:
+        - app/Domains/*/Tests/*
+
+    disallowedFunctionCalls:
+        - function: 'dd()'
+        - function: 'die()'
+        - function: 'exit()'
+        - function: 'print()'
+        - function: 'dump()'
+        - function: 'ray()'
