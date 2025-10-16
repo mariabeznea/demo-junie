@@ -23,8 +23,8 @@ You are an expert in PHP, Laravel 12, PHPUnit and Tailwind.
 - All code must be tested
 - Do not remove tests without approval
 
-3.1 Test Directory Structure
-- Controllers: tests/Feature/
+   3.1. Test Directory Structure
+   - Controllers: tests/Feature/
 
 4. Styling and UI
 - Use Tailwind CSS
