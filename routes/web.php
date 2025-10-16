@@ -24,6 +24,8 @@ Route::middleware('auth')->group(function () {
     // Shopping List Items management routes
     Route::post('shopping-lists/{shoppingList}/items', [\App\Http\Controllers\ShoppingListController::class, 'addItem'])
         ->name('shopping-lists.items.store');
+    Route::post('shopping-lists/{shoppingList}/items/create-and-add', [\App\Http\Controllers\ShoppingListController::class, 'createAndAddItem'])
+        ->name('shopping-lists.items.create-and-add');
     Route::patch('shopping-lists/{shoppingList}/items/{groceryItem}', [\App\Http\Controllers\ShoppingListController::class, 'updateItem'])
         ->name('shopping-lists.items.update');
     Route::delete('shopping-lists/{shoppingList}/items/{groceryItem}', [\App\Http\Controllers\ShoppingListController::class, 'removeItem'])

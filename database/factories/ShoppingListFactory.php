@@ -32,17 +32,27 @@ class ShoppingListFactory extends Factory
             'user_id' => User::factory(),
             'name' => 'Weekly Shopping - Week of ' . $weekStart->format('M d, Y'),
             'week_start_date' => $weekStart->format('Y-m-d'),
-            'status' => $this->faker->randomElement(['active', 'completed', 'cancelled']),
+            'status' => $this->faker->randomElement(['pending', 'in_progress', 'completed']),
         ];
     }
 
     /**
-     * Indicate that the shopping list is active.
+     * Indicate that the shopping list is pending.
      */
-    public function active(): static
+    public function pending(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'active',
+            'status' => 'pending',
+        ]);
+    }
+
+    /**
+     * Indicate that the shopping list is in progress.
+     */
+    public function inProgress(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'in_progress',
         ]);
     }
 
@@ -53,16 +63,6 @@ class ShoppingListFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => 'completed',
-        ]);
-    }
-
-    /**
-     * Indicate that the shopping list is cancelled.
-     */
-    public function cancelled(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'cancelled',
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Http\Requests\ShoppingListCreateRequest;
 use App\Http\Requests\ShoppingListUpdateRequest;
 use App\Http\Requests\ShoppingListItemCreateRequest;
 use App\Http\Requests\ShoppingListItemUpdateRequest;
+use App\Http\Requests\ShoppingListItemCreateAndAddRequest;
 use App\Models\GroceryItem;
 use App\Models\ShoppingList;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -103,6 +104,32 @@ final class ShoppingListController extends Controller
         return redirect()
             ->route('shopping-lists.show', $shoppingList)
             ->with('success', 'Item added to shopping list.');
+    }
+
+    public function createAndAddItem(ShoppingListItemCreateAndAddRequest $request, ShoppingList $shoppingList): RedirectResponse
+    {
+        $this->authorize('update', $shoppingList);
+
+        $validated = $request->validated();
+
+        // Create the new grocery item
+        $groceryItem = GroceryItem::query()->create([
+            'name' => $validated['name'],
+            'category' => $validated['category'],
+            'description' => $validated['description'] ?? null,
+            'unit' => $validated['unit'],
+        ]);
+
+        // Add the newly created item to the shopping list
+        $shoppingList->groceryItems()->attach($groceryItem->id, [
+            'quantity' => $validated['quantity'],
+            'notes' => $validated['notes'] ?? null,
+            'is_completed' => false,
+        ]);
+
+        return redirect()
+            ->route('shopping-lists.show', $shoppingList)
+            ->with('success', 'New item created and added to shopping list.');
     }
 
     public function updateItem(ShoppingListItemUpdateRequest $request, ShoppingList $shoppingList, GroceryItem $groceryItem): RedirectResponse

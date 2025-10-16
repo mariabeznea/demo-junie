@@ -72,36 +72,92 @@
             </div>
 
             <!-- Add Item Form -->
-            @if($availableGroceryItems->count() > 0)
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Add Item to List</h3>
-                        <form action="{{ route('shopping-lists.items.store', $shoppingList) }}" method="POST" class="flex flex-wrap gap-4 items-end">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Add Item to List</h3>
+
+                    <!-- Toggle Buttons -->
+                    <div class="flex mb-6 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                        <button id="selectExistingBtn" onclick="showSelectExisting()" class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm">
+                            Select Existing Item
+                        </button>
+                        <button id="createNewBtn" onclick="showCreateNew()" class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                            Create New Item
+                        </button>
+                    </div>
+
+                    <!-- Select Existing Item Form -->
+                    <div id="selectExistingForm">
+                        @if($availableGroceryItems->count() > 0)
+                            <form action="{{ route('shopping-lists.items.store', $shoppingList) }}" method="POST" class="flex flex-wrap gap-4 items-end">
+                                @csrf
+                                <div class="flex-1 min-w-48">
+                                    <label for="grocery_item_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Grocery Item</label>
+                                    <select name="grocery_item_id" id="grocery_item_id" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                        <option value="">Select an item...</option>
+                                        @foreach($availableGroceryItems as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->category }})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="w-24">
+                                    <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</label>
+                                    <input type="number" name="quantity" id="quantity" min="1" value="1" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                </div>
+                                <div class="flex-1 min-w-48">
+                                    <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes (optional)</label>
+                                    <input type="text" name="notes" id="notes" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                </div>
+                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                    Add Item
+                                </button>
+                            </form>
+                        @else
+                            <div class="text-center py-4">
+                                <p class="text-gray-500 dark:text-gray-400">No available items to select. Create a new item instead.</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Create New Item Form -->
+                    <div id="createNewForm" class="hidden">
+                        <form action="{{ route('shopping-lists.items.create-and-add', $shoppingList) }}" method="POST" class="space-y-4">
                             @csrf
-                            <div class="flex-1 min-w-48">
-                                <label for="grocery_item_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Grocery Item</label>
-                                <select name="grocery_item_id" id="grocery_item_id" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                    <option value="">Select an item...</option>
-                                    @foreach($availableGroceryItems as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->category }})</option>
-                                    @endforeach
-                                </select>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="new_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Item Name</label>
+                                    <input type="text" name="name" id="new_name" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                </div>
+                                <div>
+                                    <label for="new_category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                                    <input type="text" name="category" id="new_category" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" placeholder="e.g., Dairy, Produce, Meat">
+                                </div>
+                                <div>
+                                    <label for="new_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Unit</label>
+                                    <input type="text" name="unit" id="new_unit" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" placeholder="e.g., piece, kg, liter">
+                                </div>
+                                <div>
+                                    <label for="new_quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</label>
+                                    <input type="number" name="quantity" id="new_quantity" min="1" value="1" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                </div>
                             </div>
-                            <div class="w-24">
-                                <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</label>
-                                <input type="number" name="quantity" id="quantity" min="1" value="1" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <div>
+                                <label for="new_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description (optional)</label>
+                                <textarea name="description" id="new_description" rows="2" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
                             </div>
-                            <div class="flex-1 min-w-48">
-                                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes (optional)</label>
-                                <input type="text" name="notes" id="notes" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <div>
+                                <label for="new_notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes (optional)</label>
+                                <input type="text" name="notes" id="new_notes" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             </div>
-                            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                Add Item
-                            </button>
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Create and Add Item
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
-            @endif
+            </div>
 
             <!-- Shopping List Items -->
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -243,5 +299,30 @@
                 closeEditModal();
             }
         });
+
+        // Toggle between select existing and create new forms
+        function showSelectExisting() {
+            document.getElementById('selectExistingForm').classList.remove('hidden');
+            document.getElementById('createNewForm').classList.add('hidden');
+
+            // Update button styles
+            document.getElementById('selectExistingBtn').classList.add('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'shadow-sm');
+            document.getElementById('selectExistingBtn').classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-200');
+
+            document.getElementById('createNewBtn').classList.remove('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'shadow-sm');
+            document.getElementById('createNewBtn').classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-200');
+        }
+
+        function showCreateNew() {
+            document.getElementById('selectExistingForm').classList.add('hidden');
+            document.getElementById('createNewForm').classList.remove('hidden');
+
+            // Update button styles
+            document.getElementById('createNewBtn').classList.add('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'shadow-sm');
+            document.getElementById('createNewBtn').classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-200');
+
+            document.getElementById('selectExistingBtn').classList.remove('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'shadow-sm');
+            document.getElementById('selectExistingBtn').classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-200');
+        }
     </script>
 </x-app-layout>
