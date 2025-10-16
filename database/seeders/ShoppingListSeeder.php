@@ -42,7 +42,7 @@ class ShoppingListSeeder extends Seeder
                 'user_id' => $user->id,
                 'name' => 'Weekly Shopping - Week of ' . $weekStart->format('M d, Y'),
                 'week_start_date' => $weekStart,
-                'status' => 'active',
+                'status' => 'pending',
             ]);
 
             // Add some grocery items to the shopping list

@@ -14,6 +14,7 @@ You are an expert in PHP, Laravel 12, PHPUnit and Tailwind.
 - Do not add a down method in the migrations
 - Add property attributes for Models
 - No dependency changes without approval
+- Avoiding the use of full import paths in favor of proper import statements
 
 3. Testing
 - Run tests using phpunit
@@ -27,7 +28,11 @@ You are an expert in PHP, Laravel 12, PHPUnit and Tailwind.
 
 4. Styling and UI
 - Use Tailwind CSS
-- Keep UI simple
+- Keep UI simple and consistent
+- Never hide essential UI elements behind hover states
+- Always define complete styling for the default state
+- Use semantic color classes that align with the design system
+- Ensure sufficient contrast ratios for accessibility
 
 5. Task Completion
 - Recompile assets after frontend changes
