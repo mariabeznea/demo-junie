@@ -21,11 +21,5 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-
-        // Seed grocery items first
-        $this->call(GroceryItemSeeder::class);
-
-        // Then seed shopping lists for existing users
-        $this->call(ShoppingListSeeder::class);
     }
 }
